@@ -1,0 +1,65 @@
+#!/bin/sh
+
+
+modifier="$1"
+monitorOne="$2"
+monitorTwo="$3"
+input="$4"
+amountDesktops=`bspc query -D --names | wc -l`
+amountScreens=`bspc query -M --names | wc -l`
+time=500
+
+pkill dunst
+
+case ${amountScreens} in
+	1) case ${modifier} in 
+			"-c") notify-send -t ${time} "${input}" 
+				bspc desktop -f $((input + $((amountDesktops))));;
+			"-m")	notify-send "${input}" 
+				bspc node -d $((input + $((amountDesktops)))) && bspc desktop -f $((input + $((amountDesktops))));;
+			"-d") notify-send "${input}" 
+				bspc desktop -f ${input} && bspc desktop -f ${amountDesktops};;
+		esac;;
+	*) case ${modifier} in 
+		"-c") notify-send -t ${time} "${input}:$(bspc query -M -m --names)" 
+				curMonitor=`eval bspc query -M -m --names`	
+				case ${curMonitor} in 
+					"${monitorOne}") bspc desktop -f ${input};; 
+					"${monitorTwo}") bspc desktop -f $((input + $((amountDesktops / 2))));; 
+				esac;;
+			"-m")	notify-send -t ${time} "${input}" 
+				curMonitor=`eval bspc query -M -m --names`	
+				case ${curMonitor} in 
+					"${monitorOne}") bspc node -d ${input} && bspc desktop -f ${input};; 
+					"${monitorTwo}") bspc node -d $((input + $((amountDesktops / 2)))) && bspc desktop -f $((input + $((amountDesktops / 2))));; 
+				esac;;
+			"-d") notify-send "${input}" 
+				bspc desktop -f ${input} && bspc desktop -f $((input + $((amountDesktops / 2))));;
+		esac;;
+esac
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+expireTime=500
+vol=$(amixer | grep -Eo 'Mono: Playback .{,}%' | sed 's/Mono: Playback ...//g' | sed 's/\[//g')
+
+pkill dunst
+
+case ${vol} in
+	*)case ${1} in
+			"-") amixer set Master ${2}%-;; 
+			"+") amixer set Master ${2}%+;;
+			esac;;
+esac
+
+notify-send -t ${expireTime} 🔈${vol}

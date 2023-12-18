@@ -1,0 +1,39 @@
+#!/bin/sh
+#wifistatus=`ping -c 1 -q google.com > /dev/null; echo $?`
+battery=🔋$(acpi | sed 's/Battery 0: //g' | sed 's/, rate information unavailable//g' | sed 's/^[^ ]*[ ]//')
+charge=$(acpi)
+time=$(date +%H:%M)
+day=$(date +%Y/%m/%d)
+volume=🔊$(amixer | grep -Eo 'Mono: Playback .{,}%' | sed 's/Mono: Playback ...//g' | sed 's/\[//g') 
+brightness=🔆`xbacklight | sed "s/.\{0,7\}$//; /^$/d"`%
+amountScreens=`bspc query -M --names | wc -l`
+
+expireTime=1500
+
+pkill dunst
+
+battery (){
+	case ${charge} in
+		*Discharging*) notify-send -t ${expireTime} 🔌🚫${battery};;
+		*Full*) notify-send -t ${expireTime} ${battery};;
+		*) notify-send -t ${expireTime} 🔌${battery};;
+	esac
+}
+
+#wifi(){
+#	case ${wifistatus} in
+#		0) notify-send -t ${expireTime} 🛜" Connected";;
+#		*) notify-send -t ${expireTime} 🚫🛜" Disconnected";;
+#	esac
+#}
+
+
+notify-send -t ${expireTime} ${time}
+notify-send -t ${expireTime} ${day}
+battery
+notify-send -t ${expireTime} ${volume}
+if [ ${amountScreens} -eq 1 ]; then
+	notify-send -t ${expireTime} ${brightness};
+fi
+#wifi
+
