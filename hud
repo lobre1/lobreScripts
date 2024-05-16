@@ -7,6 +7,9 @@ day=$(date +%Y/%m/%d)
 volume=🔊$(amixer | grep -Eo 'Mono: Playback .{,}%' | sed 's/Mono: Playback ...//g' | sed 's/\[//g') 
 brightness=🔆`xbacklight | sed "s/.\{0,7\}$//; /^$/d"`%
 amountScreens=`bspc query -M --names | wc -l`
+storage=💾`df -Th /dev/nvme0n1p2 | sed '2q;d' | awk -F".94G  " '{print $2}' | awk '{print $1}'`
+desktop=$( bspc query -d 'newest:focused' -D --names)
+monitor=$( bspc query -d 'newest:focused' -M --names)
 
 expireTime=1500
 
@@ -20,20 +23,28 @@ battery (){
 	esac
 }
 
-#wifi(){
-#	case ${wifistatus} in
-#		0) notify-send -t ${expireTime} 🛜" Connected";;
-#		*) notify-send -t ${expireTime} 🚫🛜" Disconnected";;
-#	esac
-#}
+desktopFocus(){
+	if [ ${desktop} -gt 5 ]; then
+		echo $((${desktop}-5))
+	else
+		echo ${desktop}
+	fi
+}
 
-
-notify-send -t ${expireTime} ${time}
-notify-send -t ${expireTime} ${day}
+notify-send -t ${expireTime} ${time} ${day}
 battery
 notify-send -t ${expireTime} ${volume}
 if [ ${amountScreens} -eq 1 ]; then
 	notify-send -t ${expireTime} ${brightness};
 fi
+notify-send -t ${expireTime} $(echo $(desktopFocus)"("${monitor}")")
+case $(bsp-layout get) in
+	-|Tiling)
+		notify-send -t ${expireTime} "Default"
+		;;
+	*)
+		notify-send -t ${expireTime} $(bsp-layout get)
+		;;
+esac
 #wifi
 
