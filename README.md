@@ -6,6 +6,6 @@ Firefox
 ffmpeg  
 xdotool  
 ImageMagick
-[bsp-layouts (https://github.com/phenax/bsp-layout)][bsp-layouts]
+[bsp-layouts](https://github.com/phenax/bsp-layout)
 
 Made for bspwm
