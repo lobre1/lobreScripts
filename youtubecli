@@ -1,0 +1,6 @@
+#!/bin/bash
+page="https://vid.puffyan.us/search?q=${@}&page=1&date=none&type=video&duration=none&sort=relevancege"
+list=$(wget -qO - "${page}" | grep '<a href="/watch?v=')
+choice=$(echo "${list::-8}" | cut -c 48- | grep -o -P '(?<=>).*(?=</p>)' | fzf)
+link=$(echo "${list}" | grep "${choice}" | cut -c 26-45)
+mpv https://youtu.be/${link}

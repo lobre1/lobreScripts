@@ -1,0 +1,11 @@
+#!/bin/sh
+
+date=$(date +"%Y-%m-%d-%H-%M-%S")
+defExtension="mp4"
+dimensions=$(xdpyinfo | grep dimensions | cut -b 18- | cut -f1 -d" ")
+
+case ${*} in
+	"")cd /home/void/media/vids/srecs && ffmpeg -video_size ${dimensions} -framerate 30 -f x11grab -i :0.0+0,0 -c:v libx264rgb -crf 0 -preset ultrafast ${date}.${defExtension};;
+	*)cd /home/void/media/vids/srecs && ffmpeg -video_size ${dimensions} -framerate 30 -f x11grab -i :0.0+0,0 -c:v libx264rgb -crf 0 -preset ultrafast ${*};;
+esac
+

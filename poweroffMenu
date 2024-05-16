@@ -1,0 +1,8 @@
+#!/bin/sh
+
+bspc node -t floating
+if dialog --default-button "yes" --no-label "reboot" --yes-label "poweroff" --yesno "Power options" 0 0; then
+		doas poweroff
+	else
+		doas reboot
+fi
